@@ -1,7 +1,5 @@
-# coding: utf-8# # Gerador de scripts para popular o banco de dados# 
-import django.db.backends.my
+# coding: utf-8# # Gerador de scripts para popular o banco de dados#
 from faker import Faker
-from math import pi
 faker = Faker()
 #lista que armazena os nomes dos clientes
 names = []
@@ -23,7 +21,7 @@ for i in range(0,100):
 		fakename = faker.name()
 		names.append(fakename)
 		script.write('INSERT INTO CLIENTE(cadastroDatetime, endereco, nome)\r\n\tVALUES(CURDATE(), "'+ faker.address() + '","'+fakename+'");\r\n')
-	
+
 # Gera as tuplas para a tabela FISICO
 script.write("DELETE FROM FISICO;\r\n");
 for i in range(0, 50):
@@ -41,16 +39,20 @@ for i in range(24, 75):
 # Tuplas OPERACAO
 script.write("DELETE FROM OPERACAO;\r\n");
 for i in range(0, 50):
-	script.write("INSERT INTO OPERACAO(operacao, fisico, fisicoCPF)\r\n\tVALUES(13, " + "(SELECT id FROM FISICO WHERE cpf=\"" + cpf[i] + "\", (SELECT cpf FROM FISICO WHERE cpf=\"" + cpf[i] + "\"));\r\n");
+	script.write("INSERT INTO OPERACAO(operacao, fisico, fisicoCPF)\r\n\tVALUES(13, " +
+	"(SELECT id FROM FISICO WHERE cpf=\"" + cpf[i] + "\"), (SELECT cpf FROM FISICO WHERE cpf=\"" + cpf[i] + "\"));\r\n");
 j = 0;
 for i in range(24, 75):
-	script.write("INSERT INTO OPERACAO(operacao, juridico, juridicoCNPJ)\r\n\tVALUES(2, " + "(SELECT id FROM JURIDICO WHERE cnpj=\"" + cnpj[j] + "\", (SELECT cnpj FROM JURIDICO WHERE cnpj=\"" + cnpj[j] + "\"));\r\n");
+	script.write("INSERT INTO OPERACAO(operacao, juridico, juridicoCNPJ)\r\n\tVALUES(2, " +
+		"(SELECT id FROM JURIDICO WHERE cnpj=\"" + cnpj[j] + "\"), (SELECT cnpj FROM JURIDICO WHERE cnpj=\"" + cnpj[j] + "\"));\r\n");
 	j = j + 1;
 # Tuplas CONTA
 for i in range(0, 50):
-	script.write("INSERT INTO CONTA(conta, cadastroDatetime, senha, saldo, operacao)\r\n\tVALUES(\"" + i + "\", NOW(), \"password" + i + "\", " + i * math.format(pi) + ", (SELECT id FROM operacao WHERE fisicoCPF=\"" + cpf[i] + "));\r\n");
+	script.write("INSERT INTO CONTA(conta, cadastroDatetime, senha, saldo, operacao)\r\n\tVALUES(" +
+		str(i) + ", NOW(), \"password" + str(i) + "\", " + str(i * 3.1415) + ", (SELECT id FROM operacao WHERE fisicoCPF=\"" + cpf[i] + "\"));\r\n");
 j = 0;
 for i in range(24, 75):
-	script.write("INSERT INTO CONTA(conta, cadastroDatetime, senha, saldo, operacao)\r\n\tVALUES(\"" + i + "\", NOW(), \"password" + i + "\", " + 2 * i * math.format(pi) + ", (SELECT id FROM operacao WHERE juridicoCNPJ=\"" + cnpj[j] + "));\r\n");
+	script.write("INSERT INTO CONTA(conta, cadastroDatetime, senha, saldo, operacao)\r\n\tVALUES(" +
+	str(i) + ", NOW(), \"password" + str(i) + "\", " + str(2 * i * 3.1415) + ", (SELECT id FROM operacao WHERE juridicoCNPJ=\"" + cnpj[j] + "\"));\r\n");
 	j = j + 1;
 script.close();
